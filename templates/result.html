@@ -1,0 +1,99 @@
+<!DOCUTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>成績整頓君</title>
+        <style>
+            .alert{
+                background-color: rgba(255, 0, 0, 0.601);
+                display: inline-block;
+            }
+            #topBtn{
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                padding: 10px 15px;
+                background: #007BFF;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            ul{
+                list-style: none;
+                padding-left: 0;
+            }
+            .class{
+                padding: 10px;
+                margin: 5px;
+                border: 1px solid #333;
+                border-radius: 5px;
+                background: #f2f2f2;
+            }
+        </style> 
+    </head>
+    <body>
+        <a href="/">ファイル入力画面に戻る</a><br>
+        {% if show_message %}
+            <div class="class">
+                <h2 class="alert" style="margin-top: 1px;margin-bottom: 1px;">単位数のデータが取得できなかった講義</h2>
+                <p>注：以下の講義は単位数0で表示、計算されています。</p>
+                <ul>
+                    {% for credit in no_credit %}
+                        <li>{{ credit }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        {% if result %}
+            <h2>分類結果</h2>
+            <div class="class">
+                <h2 style="margin-top: 0.125rem;margin-bottom: 0.125rem;">概要</h2>
+                <ul>
+                    {% set ns = namespace(credits = 0) %}
+                    {% for category,subjects in result.items() %}
+                        <li>{{ category }}：{{ subjects[0] }}単位</li>
+                        {% if category != "分類漏れ" %}
+                            {% set ns.credits = ns.credits + subjects[0] %}
+                        {% endif %}
+                    {% endfor %}
+                    <li>合計（分類漏れを除く）：{{ ns.credits }}単位</li>
+                    {% set total_w = ns.credits - result["教職・学芸員"][0] %}
+                    <li>合計（分類漏れ、教職・学芸員を除く）：{{ total_w }}単位</li>
+                </ul>
+            </div>
+            <h2 style="padding-left: 10px">詳細</h2>
+            {% for category, subjects in result.items() %}
+                <div class="class">
+                    <h4 style="margin-top: 1px;margin-bottom: 1px;">{{category}}</h4>
+                    <ul>
+                        {% for subject in subjects %}
+                            {% if subject[2] %}
+                                {% if subject[2] == 1 %}
+                                    <li>{{ subject[0] }}：{{ subject[1] }}</li>
+                                {% elif subject[2] == 2 %}
+                                    <li class="alert">{{ subject[0] }} 0※<br>単位数が取得できませんでした</li>
+                                {% elif subject[2] == 3 %}
+                                    <li class="alert">{{ subject[0] }} 0※<br>シラバスが存在しないか、接続先のjsonファイルが正しくありません</li>
+                                {% else %}
+                                    <li class="alert">{{ subject[0] }} <br>status値が想定外の値になっています</li>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                    <p style="margin-bottom: 1px;"><b>合計</b> {{ subjects[0] }}単位({{ (subjects|length)-1 }}講義)</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <button id="topBtn">▲ 上へ</button>
+        <script>
+            document.getElementById("topBtn").addEventListener("click", function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            });
+        </script>
+    </body>
+</html>

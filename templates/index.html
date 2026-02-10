@@ -1,0 +1,34 @@
+<!DOCUTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>成績整頓君</title>
+    </head>
+    <body>
+        <form action="/result" method="POST" enctype="multipart/form-data"> <!-- method はフォームを送信する際にブラウザが使用するHTTPメソッドのこと-->
+            <label for="faculty">学部</label>
+            <select name="faculty" id="faculty">
+                <option value="engineering">総合理工学部</option>
+                <option value="material">材料エネルギー学部</option>
+            </select>
+
+            <label for="grade">入学年度：</label>
+            <select name="grade" id="grade">
+                <option value="2023">2023年度</option>
+                <option value="2024">2024年度</option>
+                <option value="2025">2025年度</option>
+            </select>
+            <h2>CSVをアップロードしてください</h2>
+            <input type="file" name="file" accept=".csv">
+            <input type="submit" value="アップロード" />
+        </form>
+
+        <h3>使い方</h3>
+        <p>CSVファイルをアップロードするだけです</p>
+        <p>CSVファイルは<a href="https://gkm2019-web2.shimane-u.ac.jp/campusweb/campusportal.do" target="_blank" rel="noopener noreferrer">Campus Square</a>にログインして<b>成績</b>を開き、<button>ファイルに出力する</button>をクリック→<button>ファイル出力を開始</button>を押して取得してください</p>
+
+        <h3>注意事項</h3>
+        <p><b>プログラムの出力結果が間違っていても当方は一切の責任を負いません</b></p>
+    </body>
+</html>
