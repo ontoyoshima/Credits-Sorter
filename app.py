@@ -231,6 +231,7 @@ def result():
                 category = classify(code,faculty,grade)
                 if credit[0] != None:
                     categories.setdefault(category)[0] += credit[0]
+                else: categories.setdefault(category)[1] = 1
                 categories.setdefault(category, []).append([name,credit[0],credit[1]])
                 if credit[1] != 1:
                     no_credit.append(name) 

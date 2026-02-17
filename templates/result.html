@@ -23,7 +23,11 @@
             }
             .alert-class{
                 display: inline-block;
-                background:#fff1f2;border-left:4px solid var(--danger);padding:12px;border-radius:8px;
+                background:#fff1f2;
+                border-left:4px solid var(--danger);
+                padding:12px;
+                padding-left: 5px;
+                border-radius:8px;
             }
             #topBtn{
                 position: fixed;
@@ -89,11 +93,17 @@
                                 {% if subject[2] == 1 %}
                                     <li>{{ subject[0] }}：{{ subject[1] }}</li>
                                 {% else %}
-                                    <li class="alert-class">{{ subject[0] }}：単位数が取得できませんでした</li>
+                                    <li class="alert-class">{{ subject[0] }}：単位数を取得できませんでした</li>
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     </ul>
-                    <p style="margin-bottom: 1px;"><b>合計</b> {{ subjects[0] }}単位({{ (subjects|length)-1 }}講義)</p>
+                    {% if subjects[1] != 1 %}
+                        <p style="margin-bottom: 1px;"><b>合計</b> {{ subjects[0] }}単位({{ (subjects|length)-1 }}講義)</p>
+                    {% else %}
+                        <p style="margin-bottom: 1px;"><b>合計</b> {{ subjects[0] }}単位※({{ (subjects|length)-1 }}講義)</p>
+                        <p>単位数が取得できていない授業を単位数0で計算した結果のため正しくありません</p>
+                    {% endif %}
                 </div>
             {% endfor %}
         {% endif %}
