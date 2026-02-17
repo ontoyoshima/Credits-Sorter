@@ -3,18 +3,34 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
+        <link rel="stylesheet" href="../static/style.css">
         <title>成績整頓君</title>
         <style>
-            .alert{
-                background-color: rgba(255, 0, 0, 0.601);
+            :root{
+                --bg:#787975;
+                --card:#ffffff;
+                --primary:#a30b0b; /*#721e65*/
+                --accent:#9e1c64;
+                --muted:#000000; /*6b7280*/
+                --danger:#dc2626;
+                --radius:14px;
+                font-family: "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            }
+            *{box-sizing:border-box}
+            body{
+                background: linear-gradient(180deg, #eef2ff 0%, var(--bg) 500%);
+                color:#111827;
+            }
+            .alert-class{
                 display: inline-block;
+                background:#fff1f2;border-left:4px solid var(--danger);padding:12px;border-radius:8px;
             }
             #topBtn{
                 position: fixed;
                 bottom: 20px;
                 right: 20px;
                 padding: 10px 15px;
-                background: #007BFF;
+                background: var(--primary);
                 color: white;
                 border: none;
                 border-radius: 5px;
@@ -29,7 +45,7 @@
                 margin: 5px;
                 border: 1px solid #333;
                 border-radius: 5px;
-                background: #f2f2f2;
+                /* background: #f2f2f2; */
             }
         </style> 
     </head>
@@ -41,7 +57,7 @@
                 <p>注：以下の講義は単位数0で表示、計算されています。</p>
                 <ul>
                     {% for credit in no_credit %}
-                        <li>{{ credit }}</li>
+                        <li class="alert-class">{{ credit }}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -72,13 +88,8 @@
                             {% if subject[2] %}
                                 {% if subject[2] == 1 %}
                                     <li>{{ subject[0] }}：{{ subject[1] }}</li>
-                                {% elif subject[2] == 2 %}
-                                    <li class="alert">{{ subject[0] }} 0※<br>単位数が取得できませんでした</li>
-                                {% elif subject[2] == 3 %}
-                                    <li class="alert">{{ subject[0] }} 0※<br>シラバスが存在しないか、接続先のjsonファイルが正しくありません</li>
                                 {% else %}
-                                    <li class="alert">{{ subject[0] }} <br>status値が想定外の値になっています</li>
-                                {% endif %}
+                                    <li class="alert-class">{{ subject[0] }}：単位数が取得できませんでした</li>
                             {% endif %}
                         {% endfor %}
                     </ul>

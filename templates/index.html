@@ -1,34 +1,235 @@
-<!DOCUTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>成績整頓君</title>
-    </head>
-    <body>
-        <form action="/result" method="POST" enctype="multipart/form-data"> <!-- method はフォームを送信する際にブラウザが使用するHTTPメソッドのこと-->
-            <label for="faculty">学部</label>
-            <select name="faculty" id="faculty">
-                <option value="engineering">総合理工学部</option>
-                <option value="material">材料エネルギー学部</option>
-            </select>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>成績整頓君</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#787975;
+      --card:#ffffff;
+      --primary:#a30b0b; /*#721e65*/
+      --accent:#9e1c64;
+      --muted:#000000; /*6b7280*/
+      --danger:#dc2626;
+      --radius:14px;
+      font-family: "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background: linear-gradient(180deg, #eef2ff 0%, var(--bg) 500%);
+      color:#111827;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+    }
 
-            <label for="grade">入学年度：</label>
-            <select name="grade" id="grade">
-                <option value="2023">2023年度</option>
-                <option value="2024">2024年度</option>
-                <option value="2025">2025年度</option>
-            </select>
-            <h2>CSVをアップロードしてください</h2>
-            <input type="file" name="file" accept=".csv">
-            <input type="submit" value="アップロード" />
-        </form>
+    .container{
+      width:100%;
+      max-width:820px;
+    }
 
-        <h3>使い方</h3>
-        <p>CSVファイルをアップロードするだけです</p>
-        <p>CSVファイルは<a href="https://gkm2019-web2.shimane-u.ac.jp/campusweb/campusportal.do" target="_blank" rel="noopener noreferrer">Campus Square</a>にログインして<b>成績</b>を開き、<button>ファイルに出力する</button>をクリック→<button>ファイル出力を開始</button>を押して取得してください</p>
+    header.app-header{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      margin-bottom:18px;
+    }
+    .logo{
+      width:64px;height:64px;border-radius:12px;
+      background:linear-gradient(135deg,var(--primary),#590046);
+      display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:22px;
+      box-shadow:0 6px 18px rgba(37,99,235,0.12);
+    }
+    h1{margin:0;font-size:20px}
 
-        <h3>注意事項</h3>
-        <p><b>プログラムの出力結果が間違っていても当方は一切の責任を負いません</b></p>
-    </body>
+    h3{
+      font-size: 18px;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 5px;
+      margin-top: 30px;
+    }
+
+    p.lead{margin:0}
+
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow:0 10px 30px rgba(2,6,23,0.06);
+    }
+
+    form.form-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px 18px;
+      align-items:center;
+    }
+    @media (max-width:640px){
+      form.form-grid{grid-template-columns:1fr}
+    }
+
+    label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+    select,input[type="text"],.fake-file{
+      width:100%;padding:10px 12px;border-radius:10px;border:1px solid #e6e9ef;background:#fcf3f3;font-size:14px;
+    }
+
+    .file-row{display:flex;gap:12px;align-items:center}
+    input[type="file"]{display:none}
+    .fake-file{display:inline-block}
+    .btn{
+      background:var(--primary);color:white;padding:10px 14px;border-radius:10px;border:0;font-weight:600;cursor:pointer;
+    }
+    .btn.secondary{background:#eef2ff;color:var(--primary);border:1px solid rgba(37,99,235,0.12)}
+    .small{font-size:13px;padding:8px 10px}
+
+    h3{font-size:16px;margin:18px 0 8px}
+
+    .notice{background:#fff7ed;border-left:4px solid #f59e0b;padding:12px;border-radius:8px} /*color:#92400e*/
+    .danger{background:#fff1f2;border-left:4px solid var(--danger);padding:12px;border-radius:8px}
+
+    .actions{display:flex;gap:10px;align-items:center;margin-top:6px}
+    .muted{color:var(--muted);font-size:13px}
+
+    footer{margin-top:14px;font-size:12px;color:var(--muted);}
+
+    /* accessibility focus */
+    .btn:focus,.fake-file:focus,select:focus{outline:3px solid rgba(37,99,235,0.14);outline-offset:2px}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="app-header">
+      <div class="logo" aria-hidden>成</div>
+      <div>
+        <h1>成績整頓君</h1>
+        <p class="lead">CSVをアップロードして、成績データを整形します。学部・入学年度を選んでください</p>
+      </div>
+    </header>
+
+    <main role="main">
+      <div style="border: 1px solid #ddd;padding: 20px;border-radius: 8px;box-shadow: 0 4px 8px rgba(0,0,0,0.1);"> 
+      <form id="uploadForm" class="form-grid" action="/result" method="POST" enctype="multipart/form-data" novalidate>
+        <div>
+          <label for="faculty"><b>学部</b></label>
+          <select name="faculty" id="faculty" required>
+            <option value="">学部を選択してください</option>
+            <option value="engineering">総合理工学部</option>
+            <option value="material">材料エネルギー学部</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="grade"><b>入学年度</b></label>
+          <select name="grade" id="grade" required>
+            <option value="">入学年度を選択してください</option>
+            <option value="2023">2023年度</option>
+            <option value="2024">2024年度</option>
+            <option value="2025">2025年度</option>
+          </select>
+        </div>
+
+        <div style="grid-column:1/-1;">
+          <label for="file"><b>CSVファイル（.csv）</b></label>
+          <div class="file-row">
+            <label for="file" class="fake-file" tabindex="0" role="button" aria-controls="fileName">ファイルを選択</label>
+            <input type="file" id="file" name="file" accept=".csv,text/csv" aria-describedby="fileHelp" required>
+            <button type="button" id="clearFile" class="btn secondary small" style="display:none;">クリア</button>
+            <div id="fileName" class="muted">まだファイルが選択されていません</div>
+          </div>
+        </div>
+
+        <div style="grid-column:1/-1;display:flex;justify-content:flex-end;margin-top:6px;">
+          <input id="submitBtn" class="btn" type="submit" value="アップロード" disabled>
+        </div>
+
+      </form>
+      </div>
+
+      <section aria-labelledby="howto" style="margin-top:18px">
+        <h3 id="howto">使い方</h3>
+        <p>学部と入学年度を選択し、CSVファイルをアップロードしてください。現時点では、2023年度以降入学の総合理工学部と材料エネルギー学部に対応しています。</p>
+        <p>CSVファイルは<a href="https://gkm2019-web2.shimane-u.ac.jp/campusweb/campusportal.do" target="_blank" rel="noopener noreferrer">Campus Square</a>にログインして<b>成績</b>を開き、<button class="ex">ファイルに出力する</button>をクリック→<button class="ex">ファイル出力を開始</button>を押して取得してください</p>
+      </section>
+
+      <section aria-labelledby="note" style="margin-top:12px">
+        <h3 id="note">注意事項</h3>
+        <div><strong>・プログラムの出力結果が間違っていても当方は一切の責任を負いません。</strong></div>
+        <div style="height:8px"></div>
+        <div>・誤りを見つけられた場合はお手数ですが<a href="https://docs.google.com/forms/d/e/1FAIpQLSfozs2VH2MXGQNDvXg1e9UtvWW52hdMKf3U_osemiHjHV218g/viewform?usp=publish-editor">報告フォーム(匿名可)</a>からご報告いただければ幸いです。可能な限り修正いたします。ご要望やご感想も励みになりますのでぜひお寄せください。</div>
+      </section>
+
+      <div>
+        <h3>想定される質問</h3>
+        <h4>Q : CSVファイルにはに名前や所属学部が載っているが、開発者はこれらの情報を取得しているのではないか</h4>
+        <p>していません。気になる人は該当部分を削除し、空白部分はそのままにしてください。頭から4行は無視する仕様になっているため、空白行を詰めると想定した動作が行われません。</p>
+        <h3>実装予定の機能</h3>
+        <h4>・単位取得数に応じて何かしらリアクションを発生させる</h4>
+        <p>卒業要件を満たしているかを判別するのはとても大変なので、単位取得数に応じてメッセージなり紙吹雪なり発生させようと考えています。単位をとって誰も褒めてくれないかもしれませんが、このアプリは褒めてくれます。この機能はアプリの役割的には必須ではなく、鬱陶しく思うユーザもいる気がするので任意にオンオフ設定ができると良さそうですね。</p>
+      </div>
+    </main>
+    <footer>
+    </footer>
+  </div>
+
+  <script>
+    (function(){
+      const fileInput = document.getElementById('file');
+      const fileName = document.getElementById('fileName');
+      const submitBtn = document.getElementById('submitBtn');
+      const clearBtn = document.getElementById('clearFile');
+      const fakeFile = document.querySelector('.fake-file');
+      const maxSize = 1 * 1024 * 1024; // 1MB
+
+      fileInput.addEventListener('change', ()=>{
+        const f = fileInput.files[0];
+        if(!f){ fileName.textContent = 'まだファイルが選択されていません'; submitBtn.disabled = true; clearBtn.style.display='none'; return; }
+
+        const ext = f.name.split('.').pop().toLowerCase();
+        if(ext !== 'csv' && f.type !== 'text/csv'){
+          fileName.textContent = 'エラー: CSVファイルを指定してください (.csv)';
+          fileName.style.color = 'var(--danger)';
+          submitBtn.disabled = true;
+          clearBtn.style.display='inline-block';
+          return;
+        }
+        if(f.size > maxSize){
+          fileName.textContent = 'エラー: ファイルサイズが5MBを超えています';
+          fileName.style.color = 'var(--danger)';
+          submitBtn.disabled = true;
+          clearBtn.style.display='inline-block';
+          return;
+        }
+
+        fileName.textContent = f.name + '（' + Math.round(f.size/1024) + ' KB）';
+        fileName.style.color = '';
+        submitBtn.disabled = false;
+        clearBtn.style.display='inline-block';
+      });
+
+      clearBtn.addEventListener('click', ()=>{
+        fileInput.value = '';
+        fileName.textContent = 'まだファイルが選択されていません';
+        submitBtn.disabled = true;
+        clearBtn.style.display='none';
+      });
+
+      document.getElementById('uploadForm').addEventListener('submit', (e)=>{
+        const faculty = document.getElementById('faculty');
+        const grade = document.getElementById('grade');
+        if(!faculty.value || !grade.value){
+          e.preventDefault();
+          alert('学部と入学年度を選択してください');
+        }
+      });
+
+    })();
+  </script>
+</body>
 </html>
