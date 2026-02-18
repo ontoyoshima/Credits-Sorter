@@ -6,6 +6,17 @@
   <title>成績整頓君</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VM2F4EXDKJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-VM2F4EXDKJ');
+  </script>
+  
   <style>
     :root{
       --bg:#787975;
@@ -166,6 +177,15 @@
       </section>
 
       <div>
+        <h3>プライバシーポリシー</h3>
+        <p>当サイトでは、サイトの利用状況の調査や分析ためにGoogle Analytics を使用しています。</p>
+        <p>Google Analytics は、Cookie を使用してトラフィックデータを収集しますが、個人を特定する情報は含まれません。</p>
+        <p>詳しくは、<a href="https://policies.google.com/technologies/partner-sites?hl=ja">Google のポリシー</a>をご覧ください。</p> 
+        <p>ユーザーは本サイトを利用することでcookieの使用に許可を与えたものとみなします。</p>
+        <p>Google Analyticsによるデータ利用を無効するには<a href="https://tools.google.com/dlpage/gaoptout?hl=ja">Google Analyticsオプトアウトアドオン</a>をご利用ください。</p>
+      </div>
+
+      <div>
         <h3>想定される質問</h3>
         <h4>Q : CSVファイルにはに名前や所属学部が載っているが、開発者はこれらの情報を取得しているのではないか</h4>
         <p>しておりません。気になる人は該当部分を削除し、空白行が生じないようにしてください。Ezcelで行うのであれば「1B,2B,1D,2D」のみを削除してください。頭から4行は無視する仕様になっているため、空白行を詰めると想定した動作が行われません。</p>
@@ -229,4 +249,5 @@
     })();
   </script>
 </body>
+
 </html>
