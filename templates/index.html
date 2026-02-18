@@ -118,7 +118,7 @@
       <form id="uploadForm" class="form-grid" action="/result" method="POST" enctype="multipart/form-data" novalidate>
         <div>
           <label for="faculty"><b>学部</b></label>
-          <select name="faculty" id="faculty" required>
+          <select style="cursor: pointer;" name="faculty" id="faculty" required>
             <option value="">学部を選択してください</option>
             <option value="engineering">総合理工学部</option>
             <option value="material">材料エネルギー学部</option>
@@ -127,7 +127,7 @@
 
         <div>
           <label for="grade"><b>入学年度</b></label>
-          <select name="grade" id="grade" required>
+          <select style="cursor: pointer;" name="grade" id="grade" required>
             <option value="">入学年度を選択してください</option>
             <option value="2023">2023年度</option>
             <option value="2024">2024年度</option>
@@ -138,7 +138,7 @@
         <div style="grid-column:1/-1;">
           <label for="file"><b>CSVファイル（.csv）</b></label>
           <div class="file-row">
-            <label for="file" class="fake-file" tabindex="0" role="button" aria-controls="fileName">ファイルを選択</label>
+            <label for="file" class="fake-file" tabindex="0" role="button" aria-controls="fileName" style="cursor: pointer;">ファイルを選択</label>
             <input type="file" id="file" name="file" accept=".csv,text/csv" aria-describedby="fileHelp" required>
             <button type="button" id="clearFile" class="btn secondary small" style="display:none;">クリア</button>
             <div id="fileName" class="muted">まだファイルが選択されていません</div>
@@ -160,7 +160,7 @@
 
       <section aria-labelledby="note" style="margin-top:12px">
         <h3 id="note">注意事項</h3>
-        <div><strong>・プログラムの出力結果が間違っていても当方は一切の責任を負いません。</strong></div>
+        <div><strong>・当サービスではテストデータにより十分な確認を行っていますが、出力結果の正確性について保証はいたしかねます。ご利用はご自身の責任でお願いいたします。</strong></div>
         <div style="height:8px"></div>
         <div>・誤りを見つけられた場合はお手数ですが<a href="https://docs.google.com/forms/d/e/1FAIpQLSfozs2VH2MXGQNDvXg1e9UtvWW52hdMKf3U_osemiHjHV218g/viewform?usp=publish-editor">報告フォーム(匿名可)</a>からご報告いただければ幸いです。可能な限り修正いたします。ご要望やご感想も励みになりますのでぜひお寄せください。</div>
       </section>
@@ -168,10 +168,7 @@
       <div>
         <h3>想定される質問</h3>
         <h4>Q : CSVファイルにはに名前や所属学部が載っているが、開発者はこれらの情報を取得しているのではないか</h4>
-        <p>していません。気になる人は該当部分を削除し、空白部分はそのままにしてください。頭から4行は無視する仕様になっているため、空白行を詰めると想定した動作が行われません。</p>
-        <h3>実装予定の機能</h3>
-        <h4>・単位取得数に応じて何かしらリアクションを発生させる</h4>
-        <p>卒業要件を満たしているかを判別するのはとても大変なので、単位取得数に応じてメッセージなり紙吹雪なり発生させようと考えています。単位をとって誰も褒めてくれないかもしれませんが、このアプリは褒めてくれます。この機能はアプリの役割的には必須ではなく、鬱陶しく思うユーザもいる気がするので任意にオンオフ設定ができると良さそうですね。</p>
+        <p>しておりません。気になる人は該当部分を削除し、空白行が生じないようにしてください。Ezcelで行うのであれば「1B,2B,1D,2D」のみを削除してください。頭から4行は無視する仕様になっているため、空白行を詰めると想定した動作が行われません。</p>
       </div>
     </main>
     <footer>

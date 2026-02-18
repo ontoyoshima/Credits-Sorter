@@ -3,7 +3,6 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <link rel="stylesheet" href="../static/style.css">
         <title>成績整頓君</title>
         <style>
             :root{
@@ -72,15 +71,28 @@
                 <h2 style="margin-top: 0.125rem;margin-bottom: 0.125rem;">概要</h2>
                 <ul>
                     {% set ns = namespace(credits = 0) %}
+                    {% set ms = namespace(flag = 0) %}
                     {% for category,subjects in result.items() %}
-                        <li>{{ category }}：{{ subjects[0] }}単位</li>
+                        {% if subjects[1] != 1 %}
+                            <li>{{ category }}：{{ subjects[0] }}単位</li>
+                        {% else %}
+                            <li>{{ category }}：{{ subjects[0] }}単位<b>※</b></li>
+                            {% set ms.flag = 1 %}
+                        {% endif %}
                         {% if category != "分類漏れ" %}
                             {% set ns.credits = ns.credits + subjects[0] %}
                         {% endif %}
                     {% endfor %}
-                    <li>合計（分類漏れを除く）：{{ ns.credits }}単位</li>
-                    {% set total_w = ns.credits - result["教職・学芸員"][0] %}
-                    <li>合計（分類漏れ、教職・学芸員を除く）：{{ total_w }}単位</li>
+                    {% if ms.flag == 0 %}
+                        <li>合計（分類漏れを除く）：{{ ns.credits }}単位</li>
+                        {% set total_w = ns.credits - result["教職・学芸員"][0] %}
+                        <li>合計（分類漏れ、教職・学芸員を除く）：{{ total_w }}単位</li>
+                    {% else %}
+                        <li>合計（分類漏れを除く）：{{ ns.credits }}単位<b>※</b></li>
+                        {% set total_w = ns.credits - result["教職・学芸員"][0] %}
+                        <li>合計（分類漏れ、教職・学芸員を除く）：{{ total_w }}単位<b>※</b></li>
+                        <p>※単位数が取得できていない授業を単位数0で計算した結果のため正しくありません</p>
+                    {% endif %}
                 </ul>
             </div>
             <h2 style="padding-left: 10px">詳細</h2>
@@ -91,9 +103,9 @@
                         {% for subject in subjects %}
                             {% if subject[2] %}
                                 {% if subject[2] == 1 %}
-                                    <li>{{ subject[0] }}：{{ subject[1] }}</li>
+                                    <li>{{ subject[3] }} {{ subject[0] }}：{{ subject[1] }}</li>
                                 {% else %}
-                                    <li class="alert-class">{{ subject[0] }}：単位数を取得できませんでした</li>
+                                    <li class="alert-class">{{ subject[3] }} {{ subject[0] }}：単位数を取得できませんでした</li>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}

@@ -29,7 +29,7 @@ def load_syllabus(year: str, code: str) -> dict:
     with p.open(encoding="utf-8") as f:
         return json.load(f)
     
-load_syllabus.cache_clear()
+# load_syllabus.cache_clear()
 
 # 時間割コードによる分類ルール
 def classify(code,faculty,grade):
@@ -77,7 +77,7 @@ def classify(code,faculty,grade):
     # elif code.startswith("MC") or code.startswith("NS") or code.startswith("ND") or code.startswith("HS") or code.startswith("ME"):
     #     return "大学院"
     # 共通
-    if code.startswith(("A1","A2","UAA")): #UAA1-UAA7    1A:A1A1  1B:A1A2 2A:A2A1  2B:A2A2   A1A1081 A1A1641 A1A1161 A1A1201 A1A1231 A1A1681 A1A1331 A1A1741 A1A1751 A1A1611 1B:
+    if code.startswith(("A1","A2","A3","A5","A6","UAA")): #UAA1-UAA7    1A:A1A1  1B:A1A2 2A:A2A1  2B:A2A2   A1A1081 A1A1641 A1A1161 A1A1201 A1A1231 A1A1681 A1A1331 A1A1741 A1A1751 A1A1611 1B:
         return "英語"
     # "UAB","UAC","UAD","UAE"      3年以上：# ドイツ語：A0B1 A0B2 フランス語：A0C2 A0C1 韓国：A0E1 A0E2 中国語：A0D2 A0D1
     elif code.startswith(("A0","UAB","UAC","UAD","UAE")):
@@ -86,7 +86,7 @@ def classify(code,faculty,grade):
     elif grade >= 2024 and code.startswith("UJC"):
         return "SDGs入門"
     # 健スポではないQBG6,7がいる問題なんならBも...
-    elif code.startswith(("B","QBE","QBG")) and not code.startswith(("B0A6","B0A7","QBG6","QBG7")):
+    elif code.startswith(("B","QBE","QBG")): # code.startswith(("B0A6","B0A7","QBG6","QBG7")): # sport実習
         if not (grade >= 2024 and faculty == "material"): 
             return "健康・スポーツ/文化・芸術等"
         elif code.startswith("QBE"):
@@ -232,7 +232,7 @@ def result():
                 if credit[0] != None:
                     categories.setdefault(category)[0] += credit[0]
                 else: categories.setdefault(category)[1] = 1
-                categories.setdefault(category, []).append([name,credit[0],credit[1]])
+                categories.setdefault(category, []).append([name,credit[0],credit[1],code])
                 if credit[1] != 1:
                     no_credit.append(name) 
 
