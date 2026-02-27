@@ -1,13 +1,13 @@
 {
-  "code": "UEB9502",
-  "title": "中国言語文化論",
+  "code": "PJG0102",
+  "title": "地域医療学II",
   "title_en": "",
   "category": "全学基礎教育科目",
   "zikanwari_syozoku_gakubu": "教養教育・全学基礎教育",
   "year": "2025",
-  "unit": "2.0",
-  "updated_at": "2026/01/29 15:37:28",
+  "unit": "1.0",
+  "updated_at": "2026/01/29 9:52:04",
   "term": "2025年度　後期",
-  "schedule": "金3,金4",
+  "schedule": "火4,火5,火6,火7,木4,木5,木6,木7",
   "target_grade": "1年,2年"
 }

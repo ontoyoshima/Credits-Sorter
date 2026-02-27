@@ -140,6 +140,7 @@ def index():
 
 @app.route("/result", methods=["POST"])
 def result():
+    num = 0
     # 結果を記録する変数
     result = {}
     # 単位数を取得できなかった講義名を記録する配列
@@ -161,24 +162,24 @@ def result():
             df_passed = df[df["合否"] == "合"]
 
             # 区分ごとにリストに分け記録する変数
-            categories = {"英語":[0],
-                          "第二外国語":[0],
-                          "健康・スポーツ/文化・芸術等":[0],
-                          "情報科学":[0],
-                          "数理・データサイエンス":[0],
-                          "人文社会科学分野":[0],
-                          "自然科学分野":[0],
-                          "学際分野":[0]
+            categories = {"英語":[[0,0]],
+                          "第二外国語":[[0,0]],
+                          "健康・スポーツ/文化・芸術等":[[0,0]],
+                          "情報科学":[[0,0]],
+                          "数理・データサイエンス":[[0,0]],
+                          "人文社会科学分野":[[0,0]],
+                          "自然科学分野":[[0,0]],
+                          "学際分野":[[0,0]]
                         }
             # 2023年度以降入学なら
             if grade <= 2023:
                 categories.update({
-                    "社会人力養成科目":[0]
+                    "社会人力養成科目":[[0,0]]
                 })
             # 2024年度以降入学なら
             if grade >= 2024:
                 categories.update({
-                    "SDGs入門":[0]
+                    "SDGs入門":[[0,0]]
                 })
 
             # 学部ごとの処理
@@ -186,23 +187,23 @@ def result():
             if faculty == "engineering":
                 if grade <= 2024:
                     categories.update({
-                        "自然科学系学部共通科目":[0],
-                        "基盤科目":[0],
-                        "専門必修/専門選択/専門自由科目":[0]
+                        "自然科学系学部共通科目":[[0,0]],
+                        "基盤科目":[[0,0]],
+                        "専門必修/専門選択/専門自由科目":[[0,0]]
                     })
                 # 総合理工学科の場合
                 elif grade >= 2025:
                     categories.update({
-                        "理工共通基礎科目":[0],
-                        "理工社会実装教育科目":[0],
-                        "専門人材教育科目":[0]
+                        "理工共通基礎科目":[[0,0]],
+                        "理工社会実装教育科目":[[0,0]],
+                        "専門人材教育科目":[[0,0]]
                     })
 
             # 材料エネルギー学部
             if faculty == "material":
                 categories.update({
-                    "基盤科目":[0],
-                    "専門必修/専門選択科目":[0]
+                    "基盤科目":[[0,0]],
+                    "専門必修/専門選択科目":[[0,0]]
                     })
                 if grade >= 2024:
                     del categories["健康・スポーツ/文化・芸術等"]
@@ -218,9 +219,9 @@ def result():
 
             # 共通
             categories.update({
-                "全学開放科目":[0],
-                "教職・学芸員":[0],
-                "分類漏れ":[0]
+                "全学開放科目":[[0,0]],
+                "教職・学芸員":[[0,0]],
+                "分類漏れ":[[0,0]]
             })
             
             for _, row in df_passed.iterrows():
@@ -230,9 +231,10 @@ def result():
                 credit = get_credit(year,code)
                 category = classify(code,faculty,grade)
                 if credit[0] != None:
-                    categories.setdefault(category)[0] += credit[0]
-                else: categories.setdefault(category)[1] = 1
+                    categories.setdefault(category)[0][0] += credit[0]
+                else: categories.setdefault(category)[0][1] = 1
                 categories.setdefault(category, []).append([name,credit[0],credit[1],code])
+                num += 1
                 if credit[1] != 1:
                     no_credit.append(name) 
 
@@ -241,7 +243,7 @@ def result():
 
             result = categories
 
-    return render_template("result.html", result=result,no_credit=no_credit,show_message=show_message)
+    return render_template("result.html", result=result,no_credit=no_credit,show_message=show_message,num=num)
 
 if __name__ == "__main__":
     app.run(debug=True) # 開発用サーバをデバックモードで実行

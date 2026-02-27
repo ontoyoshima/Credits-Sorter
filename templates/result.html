@@ -54,6 +54,7 @@
     </head>
     <body>
         <a href="/">ファイル入力画面に戻る</a><br>
+        <p>入力講義数：{{ num }}</p>
         {% if show_message %}
             <div class="class">
                 <h2 class="alert" style="margin-top: 1px;margin-bottom: 1px;">単位数のデータが取得できなかった講義</h2>
@@ -73,23 +74,23 @@
                     {% set ns = namespace(credits = 0) %}
                     {% set ms = namespace(flag = 0) %}
                     {% for category,subjects in result.items() %}
-                        {% if subjects[1] != 1 %}
-                            <li>{{ category }}：{{ subjects[0] }}単位</li>
+                        {% if subjects[0][1] != 1 %}
+                            <li>{{ category }}：{{ subjects[0][0] }}単位</li>
                         {% else %}
-                            <li>{{ category }}：{{ subjects[0] }}単位<b>※</b></li>
+                            <li>{{ category }}：{{ subjects[0][0] }}単位<b>※</b></li>
                             {% set ms.flag = 1 %}
                         {% endif %}
                         {% if category != "分類漏れ" %}
-                            {% set ns.credits = ns.credits + subjects[0] %}
+                            {% set ns.credits = ns.credits + subjects[0][0] %}
                         {% endif %}
                     {% endfor %}
                     {% if ms.flag == 0 %}
                         <li>合計（分類漏れを除く）：{{ ns.credits }}単位</li>
-                        {% set total_w = ns.credits - result["教職・学芸員"][0] %}
+                        {% set total_w = ns.credits - result["教職・学芸員"][0][0] %}
                         <li>合計（分類漏れ、教職・学芸員を除く）：{{ total_w }}単位</li>
                     {% else %}
                         <li>合計（分類漏れを除く）：{{ ns.credits }}単位<b>※</b></li>
-                        {% set total_w = ns.credits - result["教職・学芸員"][0] %}
+                        {% set total_w = ns.credits - result["教職・学芸員"][0][0] %}
                         <li>合計（分類漏れ、教職・学芸員を除く）：{{ total_w }}単位<b>※</b></li>
                         <p>※単位数が取得できていない授業を単位数0で計算した結果のため正しくありません</p>
                     {% endif %}
@@ -110,10 +111,10 @@
                             {% endif %}
                         {% endfor %}
                     </ul>
-                    {% if subjects[1] != 1 %}
-                        <p style="margin-bottom: 1px;"><b>合計</b> {{ subjects[0] }}単位({{ (subjects|length)-1 }}講義)</p>
+                    {% if subjects[0][1] != 1 %}
+                        <p style="margin-bottom: 1px;"><b>合計</b> {{ subjects[0][0] }}単位({{ (subjects|length)-1 }}講義)</p>
                     {% else %}
-                        <p style="margin-bottom: 1px;"><b>合計</b> {{ subjects[0] }}単位※({{ (subjects|length)-1 }}講義)</p>
+                        <p style="margin-bottom: 1px;"><b>合計</b> {{ subjects[0][0] }}単位※({{ (subjects|length)-1 }}講義)</p>
                         <p>単位数が取得できていない授業を単位数0で計算した結果のため正しくありません</p>
                     {% endif %}
                 </div>
